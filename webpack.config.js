@@ -10,10 +10,10 @@ module.exports = {
     // print: './src/js/print.js',
   },
   output: {
-    // filename: 'bundle.js',
-    filename: '[name].bundle.js',
+    // filename: '[name].bundle.js', // [name] for different js files
+    filename: 'bundle.js', // [name] for different js files
     path: path.resolve(__dirname, 'dist'),
-    clean: true,
+    clean: true, // deleting unused resources in dist folder
   },
   devtool: 'inline-source-map',
   // devServer: {
@@ -32,9 +32,9 @@ module.exports = {
     //   fix: true, // Automatically fix linting errors where possible
     // }),
   ],
-  optimization: {
-    runtimeChunk: 'single',
-  },
+  // optimization: {
+  //   runtimeChunk: 'single',
+  // },
   module: {
     rules: [
       {
