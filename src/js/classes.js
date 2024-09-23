@@ -30,7 +30,7 @@ export class Gameboard{
                     cell: {
                         col: String.fromCharCode(97 + col), // Column letter ('a' to 'j')
                         row: row.toString(), // Row number (1 to 10)
-                        isShoot: false
+                        shot: false
                     }
                 })
             }
@@ -41,7 +41,7 @@ export class Gameboard{
     receiveAttack(row, col){
         const attackedCell = this.board.find(cells => cells.cell.row === row && cells.cell.col === col);
         if (attackedCell) {
-            attackedCell.cell.isShoot = true;
+            attackedCell.cell.shot = true;
             console.log(`Attack received on cell:`, attackedCell);
         } else {
             console.log(`No cell found at row ${row} and column ${col}`);

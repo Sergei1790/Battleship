@@ -35,7 +35,9 @@
         transform: translateY(-50%);
     }
 }
-
+.cell.shot{
+    background-color: #369;
+}
 .cell:nth-child(1)::after{
     content: 'A';
 }
@@ -95,4 +97,10 @@
 }
 .cell:nth-child(91)::before{
     content: '10';
+}
+.ship{
+    height: 50px;
+    width: 150px;
+    border: 2px solid red;
+
 }
