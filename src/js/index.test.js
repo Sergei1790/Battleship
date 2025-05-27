@@ -31,25 +31,25 @@ describe('Gameboard', () => {
 
         // Check the structure of the first cell
         expect(gameboard.board[0]).toEqual({
-            cell: { col: 'a', row: 1, isShoot: false }
+            cell: { col: 'a', row: '1', shot: false }
         });
 
         // Check the structure of the last cell
         expect(gameboard.board[99]).toEqual({
-            cell: { col: 'j', row: 10, isShoot: false }
+            cell: { col: 'j', row: '10', shot: false }
         });
 
         // Check some random cells to verify the structure
         expect(gameboard.board[9]).toEqual({
-            cell: { col: 'a', row: 10, isShoot: false }
+            cell: { col: 'j', row: '1', shot: false }
         });
         expect(gameboard.board[19]).toEqual({
-            cell: { col: 'b', row: 10, isShoot: false }
+            cell: { col: 'j', row: '2', shot: false }
         });
     });
     test('Gameboard receiveAttack', () => {
         expect(gameboard.board[19]).toEqual({
-            cell: { col: 'b', row: 10, isShoot: false }
+            cell: { col: 'j', row: '2', shot: false }
         });
     })
 });

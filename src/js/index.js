@@ -1,6 +1,6 @@
 import '../css/style.css';
 import {Ship} from './classes.js';
-import './DOM.js';
+import './dom.js';
 // import './classes.js';
 if (process.env.NODE_ENV !== 'production') {
     console.log('Looks like we are in development mode!');

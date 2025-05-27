@@ -1,7 +1,6 @@
 import {Gameboard} from './classes';
 // const gameboard = new Gameboard;
 // console.log('asd', gameboard.createBoard()); 
-console.log('asdasdasdasd');
 const main = document.querySelector('main');
 function displayBoard() {
     const gameboard = new Gameboard();
