@@ -112,50 +112,50 @@ dropTargets.forEach(cell => {
     });
   });
   
+// ----
+//   dropTargets.forEach(cell => {
+//     cell.addEventListener('dragenter', (event) => {
+//         const shipLength = parseInt(draggableShip.dataset.length);
+//         if (canPlaceShip(cell, shipLength)) {
+//             event.target.style.backgroundColor = '#f0f0f0';
+//         } else {
+//             event.target.style.backgroundColor = '#ffcccc';
+//         }
+//     });
 
-  dropTargets.forEach(cell => {
-    cell.addEventListener('dragenter', (event) => {
-        const shipLength = parseInt(draggableShip.dataset.length);
-        if (canPlaceShip(cell, shipLength)) {
-            event.target.style.backgroundColor = '#f0f0f0';
-        } else {
-            event.target.style.backgroundColor = '#ffcccc';
-        }
-    });
+//     cell.addEventListener('dragover', (event) => {
+//         event.preventDefault();
+//     });
 
-    cell.addEventListener('dragover', (event) => {
-        event.preventDefault();
-    });
+//     cell.addEventListener('drop', (event) => {
+//         event.preventDefault();
+//         const shipLength = parseInt(draggableShip.dataset.length);
 
-    cell.addEventListener('drop', (event) => {
-        event.preventDefault();
-        const shipLength = parseInt(draggableShip.dataset.length);
+//         // Only place the ship if it fits
+//         if (canPlaceShip(cell, shipLength)) {
+//             // Mark all cells as occupied and add a visual part for each
+//             const startRow = parseInt(cell.dataset.row, 10);
+//             const startCol = cell.dataset.col.charCodeAt(0) - 97;
+//             for (let i = 0; i < shipLength; i++) {
+//                 const row = startRow;
+//                 const col = startCol + i;
+//                 const columnLetter = String.fromCharCode(97 + col);
+//                 const targetCell = document.querySelector(`.cell[data-row='${row}'][data-col='${columnLetter}']`);
+//                 if (targetCell) {
+//                     targetCell.classList.add('occupied');
+//                     // Optionally, add a visual ship part:
+//                     const part = document.createElement('div');
+//                     part.classList.add('ship-part');
+//                     targetCell.appendChild(part);
+//                 }
+//             }
+//             // Optionally, hide or reset the draggable ship
+//             draggableShip.style.display = 'none';
+//         }
+//         event.target.style.backgroundColor = '';
+//     });
 
-        // Only place the ship if it fits
-        if (canPlaceShip(cell, shipLength)) {
-            // Mark all cells as occupied and add a visual part for each
-            const startRow = parseInt(cell.dataset.row, 10);
-            const startCol = cell.dataset.col.charCodeAt(0) - 97;
-            for (let i = 0; i < shipLength; i++) {
-                const row = startRow;
-                const col = startCol + i;
-                const columnLetter = String.fromCharCode(97 + col);
-                const targetCell = document.querySelector(`.cell[data-row='${row}'][data-col='${columnLetter}']`);
-                if (targetCell) {
-                    targetCell.classList.add('occupied');
-                    // Optionally, add a visual ship part:
-                    const part = document.createElement('div');
-                    part.classList.add('ship-part');
-                    targetCell.appendChild(part);
-                }
-            }
-            // Optionally, hide or reset the draggable ship
-            draggableShip.style.display = 'none';
-        }
-        event.target.style.backgroundColor = '';
-    });
-
-    cell.addEventListener('dragleave', (event) => {
-        event.target.style.backgroundColor = '';
-    });
-});
+//     cell.addEventListener('dragleave', (event) => {
+//         event.target.style.backgroundColor = '';
+//     });
+// });
