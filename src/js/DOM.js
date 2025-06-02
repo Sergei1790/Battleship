@@ -1,13 +1,12 @@
 import {Gameboard} from './classes';
 // const gameboard = new Gameboard;
-// console.log('asd', gameboard.createBoard()); 
+// console.log('asd', gameboard.createBoard());
 const main = document.querySelector('main');
 function displayBoard() {
     const gameboard = new Gameboard();
 
     const gameboardDisplay = document.createElement('div');
     const gameboardCells = document.createElement('div');
-
 
     gameboardDisplay.classList.add('sund-gameboard');
     gameboardCells.classList.add('sund-cells');
@@ -31,131 +30,117 @@ function displayBoard() {
             e.target.classList.add('shot');
         });
         gameboardCells.appendChild(cell);
-    })
+    });
     main.appendChild(gameboardDisplay);
 }
 // console.log(gameboard.board[9]);
 displayBoard();
 
-const draggableShip = document.querySelector('.ship[draggable="true"]');
-draggableShip.addEventListener('dragstart', (event) => {
-    event.dataTransfer.setData('text/plain', event.target.id);
-    console.log("Drag started on element:", event.target.id);
+let draggableShip = null;
+let startingPart = null;
+
+document.querySelectorAll('.ship[draggable="true"]').forEach((ship) => {
+    ship.querySelectorAll('.ship-part').forEach((part) => {
+        part.addEventListener('mousedown', (event) => {
+            startingPart = +event.target.dataset.part;
+        });
+    });
+    ship.addEventListener('dragstart', () => {
+        console.log('Drag started from part:', startingPart);
+        draggableShip = ship;
+    });
+    ship.addEventListener('dragend', () => {
+        draggableShip = null;
+        startingPart = null;
+    });
 });
+
+function getCellsForShip(cell, length, direction = 'horizontal', startingPart) {
+    const startRow = +cell.dataset.row;
+    const startCol = cell.dataset.col.charCodeAt(0) - 97;
+    const cells = [];
+    for (let i = 0; i < length; i++) {
+        // Calculate the offset from the drop cell, so part at startingPart aligns with drop cell
+        const offset = i - startingPart;
+
+        const row = direction === 'horizontal' ? startRow : startRow + offset;
+        const col = direction === 'horizontal' ? startCol + offset : startCol;
+
+        const rowNum = row.toString();
+        const columnLetter = String.fromCharCode(97 + col);
+
+        const targetCell = document.querySelector(`.cell[data-row='${rowNum}'][data-col='${columnLetter}']`);
+
+        if (targetCell) {
+            cells.push(targetCell);
+        }
+    }
+    return cells;
+}
+
+function canPlaceShip(cell, length, direction = 'horizontal', startingPart) {
+    const cells = getCellsForShip(cell, length, direction, startingPart);
+    if (!cells) return false; // invalid placement (out of board)
+    return !cells.some((cell) => cell.classList.contains('occupied'));
+}
 
 const dropTargets = document.querySelectorAll('.cell');
 
-function canPlaceShip(cell, ship, length, direction = 'horizontal'){
-    const startRow = cell.dataset.row;
-    const startCol = cell.dataset.col.charCodeAt(0) - 97; 
-    for (let i = 0; i < length; i++) {
-        const row = direction === 'horizontal' ? startRow : startRow + i;
-        const col = direction === 'horizontal' ? startCol + i : startCol;
-        const columnLetter = String.fromCharCode(97 + col); 
-
-        const targetCell = document.querySelector(`.cell[data-row='${row}'][data-col='${columnLetter}']`);
-        console.log('Checking target cell:', targetCell);
-
-
-        // if (targetCell) {
-        //     targetCell.appendChild(ship); // Append the ship to each target cell
-        //     targetCell.classList.add('occupied'); // Mark the cell as occupied
-        // }
-         if (!targetCell || targetCell.classList.contains('occupied')) {
-            return false;
-        }
-        
-    }
-    return true;
-}
+let lastHighlightedCells = [];
 
 // Add event listeners to each drop target
-dropTargets.forEach(cell => {
+dropTargets.forEach((cell) => {
     // Allow the dragged element to be dropped by preventing the default behavior
-    cell.addEventListener('dragenter', (event) => {
-        const shipLength = parseInt(draggableShip.dataset.length);
-        // Check if there is enough space to place the ship
-        if (canPlaceShip(cell, draggableShip, shipLength)) {
-            event.target.style.backgroundColor = '#f0f0f0';  // Highlight the cell when dragging over
-        } else {
-            event.target.style.backgroundColor = '#ffcccc'; // Red highlight if no space
-        }
-    });
     cell.addEventListener('dragover', (event) => {
-        event.preventDefault(); // Necessary to allow dropping
-        
+        event.preventDefault();
+        if (!draggableShip || startingPart === null) return; // safety check
 
+        lastHighlightedCells.forEach((cellEl) => {
+            cellEl.style.backgroundColor = '';
+        });
+        const shipLength = parseInt(draggableShip.dataset.length);
+        const direction = 'horizontal';
+
+        const cells = getCellsForShip(cell, shipLength, direction, startingPart);
+        const isValid = cells.length === shipLength && canPlaceShip(cell, shipLength, direction, startingPart);
+
+        cells.forEach((cellEl) => {
+            cellEl.style.backgroundColor = isValid ? '#f0f0f0' : '#ffcccc';
+        });
+
+        lastHighlightedCells = cells;
     });
-  
+
+
     // Handle when the dragged element is dropped
     cell.addEventListener('drop', (event) => {
-      event.preventDefault(); // Prevent default to allow the drop
-  
-      // Retrieve the ID of the dragged element
-      
-      // Find the dragged element using its ID
-      const draggedElementId = event.dataTransfer.getData('text/plain');
-      const draggedElement = document.getElementById(draggedElementId);
-      
-      // Append the dragged element to the current cell
-      event.target.appendChild(draggedElement);
-      
-      // Reset the cell's style after the drop
-      event.target.style.backgroundColor = '';
-  
-      console.log(`Dropped element with ID: ${draggedElementId} into cell`);
+        event.preventDefault(); // Prevent default to allow the drop
+        let placedShip = lastHighlightedCells;
+        placedShip.forEach((cellEl) => {
+            cellEl.classList.add('ship', 'occupied');
+        });
+
+
+        // Retrieve the ID of the dragged element
+
+        // // Find the dragged element using its ID
+        // const draggedElementId = event.dataTransfer.getData('text/plain');
+        // const draggedElement = document.getElementById(draggedElementId);
+
+        // // Append the dragged element to the current cell
+        // event.target.appendChild(draggedElement);
+
+        // // Reset the cell's style after the drop
+        // event.target.style.backgroundColor = '';
+
+        // console.log(`Dropped element with ID: ${draggedElementId} into cell`);
     });
-  
+
     // Optional: Reset the background color when the dragging leaves the target
-    cell.addEventListener('dragleave', (event) => {
-      event.target.style.backgroundColor = '';
+    cell.addEventListener('dragleave', () => {
+        lastHighlightedCells.forEach((cellEl) => {
+            cellEl.style.backgroundColor = '';
+        });
+        // lastHighlightedCells = []; // Reset
     });
-  });
-  
-// ----
-//   dropTargets.forEach(cell => {
-//     cell.addEventListener('dragenter', (event) => {
-//         const shipLength = parseInt(draggableShip.dataset.length);
-//         if (canPlaceShip(cell, shipLength)) {
-//             event.target.style.backgroundColor = '#f0f0f0';
-//         } else {
-//             event.target.style.backgroundColor = '#ffcccc';
-//         }
-//     });
-
-//     cell.addEventListener('dragover', (event) => {
-//         event.preventDefault();
-//     });
-
-//     cell.addEventListener('drop', (event) => {
-//         event.preventDefault();
-//         const shipLength = parseInt(draggableShip.dataset.length);
-
-//         // Only place the ship if it fits
-//         if (canPlaceShip(cell, shipLength)) {
-//             // Mark all cells as occupied and add a visual part for each
-//             const startRow = parseInt(cell.dataset.row, 10);
-//             const startCol = cell.dataset.col.charCodeAt(0) - 97;
-//             for (let i = 0; i < shipLength; i++) {
-//                 const row = startRow;
-//                 const col = startCol + i;
-//                 const columnLetter = String.fromCharCode(97 + col);
-//                 const targetCell = document.querySelector(`.cell[data-row='${row}'][data-col='${columnLetter}']`);
-//                 if (targetCell) {
-//                     targetCell.classList.add('occupied');
-//                     // Optionally, add a visual ship part:
-//                     const part = document.createElement('div');
-//                     part.classList.add('ship-part');
-//                     targetCell.appendChild(part);
-//                 }
-//             }
-//             // Optionally, hide or reset the draggable ship
-//             draggableShip.style.display = 'none';
-//         }
-//         event.target.style.backgroundColor = '';
-//     });
-
-//     cell.addEventListener('dragleave', (event) => {
-//         event.target.style.backgroundColor = '';
-//     });
-// });
+});
