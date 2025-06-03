@@ -25,7 +25,7 @@ export class Gameboard{
     }
     createBoard() {
         for (let row = 1; row <= 10; row++) {
-            for (let col = 0; col < 10; col++) {
+            for (let col = 0; col <= 9; col++) {
                 this.board.push({
                     cell: {
                         col: String.fromCharCode(97 + col), // Column letter ('a' to 'j')

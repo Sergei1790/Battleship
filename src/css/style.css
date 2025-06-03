@@ -11,9 +11,17 @@
 }
 .cell{
     border: 2px solid #369;
+    border-right: 0;
+    border-bottom: 0;
     margin: -1px;
     border-collapse: collapse;
     position: relative;
+    &:nth-child(10n){
+        border-right: 2px solid #369;
+    }
+    &:nth-last-child(-n+10){
+        border-bottom: 2px solid #369;
+    }
 }
 .cell:nth-child(-n+10) {
     position: relative;
@@ -124,5 +132,8 @@
     }
 }
 .occupied {
-    background-color: #369 !important;
+    background-color: rgb(224, 226, 229) !important;
+    &.ship{
+        background-color: #369 !important;
+    }
 }
