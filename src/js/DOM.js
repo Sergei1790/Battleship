@@ -38,6 +38,16 @@ displayBoard();
 
 let draggableShip = null;
 let startingPart = null;
+let direction = 'horizontal';
+
+function rotateShip() {
+    document.querySelector('.ship').classList.remove(direction);
+    direction = (direction === 'horizontal') ? 'vertical' : 'horizontal';
+    document.querySelector('.ship').classList.add(direction);
+    console.log('New direction:', direction);
+}
+
+document.querySelector('#rotate').addEventListener('click', rotateShip)
 
 document.querySelectorAll('.ship[draggable="true"]').forEach((ship) => {
     ship.querySelectorAll('.ship-part').forEach((part) => {
@@ -55,7 +65,7 @@ document.querySelectorAll('.ship[draggable="true"]').forEach((ship) => {
     });
 });
 
-function getCellsForShip(cell, length, direction = 'horizontal', startingPart) {
+function getCellsForShip(cell, length, direction, startingPart) {
     const startRow = +cell.dataset.row;
     const startCol = cell.dataset.col.charCodeAt(0) - 97;
     const cells = [];
@@ -103,7 +113,7 @@ function markShipAdjacentCels(shipCells) {
     });
 }
 
-function canPlaceShip(cell, length, direction = 'horizontal', startingPart) {
+function canPlaceShip(cell, length, direction, startingPart) {
     const cells = getCellsForShip(cell, length, direction, startingPart);
     if (!cells || cells.length !== length) return false; // invalid placement (out of board)
     return !cells.some((cell) => cell.classList.contains('occupied'));
@@ -124,7 +134,6 @@ dropTargets.forEach((cell) => {
             cellEl.style.backgroundColor = '';
         });
         const shipLength = parseInt(draggableShip.dataset.length);
-        const direction = 'horizontal';
 
         const cells = getCellsForShip(cell, shipLength, direction, startingPart);
         const isValid = cells.length === shipLength && canPlaceShip(cell, shipLength, direction, startingPart);
@@ -140,7 +149,6 @@ dropTargets.forEach((cell) => {
         event.preventDefault(); // Prevent default to allow the drop
 
         const shipLength = parseInt(draggableShip.dataset.length);
-        const direction = 'horizontal';
         const isValid = lastHighlightedCells.length === shipLength && canPlaceShip(cell, shipLength, direction, startingPart);
         lastHighlightedCells.forEach((cellEl) => {
             cellEl.style.backgroundColor = '';
