@@ -108,6 +108,7 @@
 }
 .ship{
     display: flex;
+    opacity: 1 !important;
     &.horizontal{
         .ship-part {
             border-right: 0;
